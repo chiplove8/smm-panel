@@ -1,0 +1,70 @@
+<div class="mb-3 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+  <div class="card"><div class="text-xs text-slate-500">Số dư</div><div class="text-lg font-bold text-emerald-600 sm:text-xl"><%= formatVnd(user.balance) %></div></div>
+  <div class="card"><div class="text-xs text-slate-500">Đã chi tiêu</div><div class="text-lg font-bold text-slate-900 sm:text-xl"><%= formatVnd(stats.spent) %></div></div>
+  <div class="card"><div class="text-xs text-slate-500">Tổng đơn</div><div class="text-lg font-bold text-slate-900 sm:text-xl"><%= formatNumber(stats.total) %></div></div>
+  <div class="card"><div class="text-xs text-slate-500">Đang chạy</div><div class="text-lg font-bold text-indigo-600 sm:text-xl"><%= formatNumber(stats.running) %></div></div>
+</div>
+
+<div class="grid grid-cols-1 gap-3 lg:grid-cols-5">
+  <form id="order-form" action="/orders" method="POST" class="card space-y-3 lg:col-span-3">
+    <h2 class="font-semibold text-slate-900">Đặt đơn mới</h2>
+    <%- include('../partials/error') %>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>
+      <label for="category" class="label">Danh mục</label>
+      <select id="category" class="input">
+        <% categories.forEach((c) => { %><option value="<%= c.id %>"><%= c.name %></option><% }) %>
+      </select>
+    </div>
+    <div>
+      <label for="service" class="label">Dịch vụ</label>
+      <select id="service" name="service_id" class="input" required>
+        <% categories.forEach((c) => { %>
+          <optgroup label="<%= c.name %>">
+            <% services.filter((s) => s.category_id === c.id).forEach((s) => { %>
+              <option value="<%= s.id %>" <%= String(values.service_id) === String(s.id) ? 'selected' : '' %>>#<%= s.id %> - <%= s.name %> - <%= formatVnd(s.rate) %>/1000</option>
+            <% }) %>
+          </optgroup>
+        <% }) %>
+      </select>
+    </div>
+    <div id="service-info" class="hidden rounded-md bg-slate-50 p-3 text-sm ring-1 ring-slate-200">
+      <p data-field="description" class="text-slate-700"></p>
+      <div class="mt-2 grid grid-cols-2 gap-1 text-xs text-slate-500 sm:grid-cols-4">
+        <span>Giá: <b data-field="rate" class="text-slate-800"></b>/1000</span>
+        <span>Min: <b data-field="min" class="text-slate-800"></b></span>
+        <span>Max: <b data-field="max" class="text-slate-800"></b></span>
+        <span>TG: <b data-field="time" class="text-slate-800"></b></span>
+      </div>
+    </div>
+    <div>
+      <label for="link" class="label">Link</label>
+      <input id="link" name="link" type="url" class="input" placeholder="https://..." value="<%= values.link || '' %>" required>
+    </div>
+    <div>
+      <label for="quantity" class="label">Số lượng</label>
+      <input id="quantity" name="quantity" type="number" inputmode="numeric" class="input" value="<%= values.quantity || '' %>" required>
+    </div>
+    <div class="flex items-center justify-between rounded-md bg-indigo-50 px-3 py-2 ring-1 ring-indigo-100">
+      <span class="text-sm text-slate-600">Thành tiền</span>
+      <span id="charge" class="text-lg font-bold text-indigo-700">0đ</span>
+    </div>
+    <button type="submit" class="btn-primary w-full">Đặt đơn</button>
+  </form>
+
+  <div class="card !p-0 lg:col-span-2">
+    <div class="flex items-center justify-between border-b border-slate-200 px-3 py-2 sm:px-5">
+      <h2 class="font-semibold text-slate-900">Đơn gần đây</h2>
+      <a href="/orders" class="text-sm font-medium text-indigo-600 hover:underline">Xem tất cả</a>
+    </div>
+    <% if (!recentOrders.length) { %>
+      <p class="px-3 py-6 text-center text-sm text-slate-500">Bạn chưa có đơn hàng nào.</p>
+    <% } else { %>
+      <ul class="divide-y divide-slate-100">
+        <% recentOrders.forEach((o) => { %><%- include('../partials/order-row', { o }) %><% }) %>
+      </ul>
+    <% } %>
+  </div>
+</div>
+
+<script type="application/json" id="services-data"><%- JSON.stringify(services.map(({ id, category_id, name, rate, min_qty, max_qty, avg_time, description }) => ({ id, category_id, name, rate, min_qty, max_qty, avg_time, description }))).replace(/</g, '\\u003c') %></script>

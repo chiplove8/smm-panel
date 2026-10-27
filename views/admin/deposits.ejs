@@ -1,0 +1,25 @@
+<% if (!deposits.length) { %>
+  <div class="card text-center text-sm text-slate-500">Chưa có yêu cầu nạp tiền.</div>
+<% } %>
+<div class="space-y-2">
+  <% deposits.forEach((d) => { %>
+    <div class="card flex flex-wrap items-center justify-between gap-2 !p-3">
+      <div class="min-w-0">
+        <div class="font-mono text-sm font-semibold text-slate-900"><%= d.reference %></div>
+        <div class="text-xs text-slate-500">#<%= d.id %> &middot; <span class="font-medium text-slate-700"><%= d.username %></span> &middot; <%= methods[d.method] %> &middot; <%= formatDate(d.created_at) %></div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-slate-900"><%= formatVnd(d.amount) %></span>
+        <% if (d.status === 'pending') { %>
+          <form action="/admin/deposits/<%= d.id %>" method="POST" class="flex gap-1" data-confirm="Xác nhận xử lý yêu cầu <%= d.reference %>?">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button name="action" value="approve" class="btn-primary !px-3 !py-1">Duyệt</button>
+            <button name="action" value="reject" class="btn-danger !px-3 !py-1">Từ chối</button>
+          </form>
+        <% } else { %>
+          <span class="badge <%= DEPOSIT_STATUSES[d.status].badge %>"><%= DEPOSIT_STATUSES[d.status].label %></span>
+        <% } %>
+      </div>
+    </div>
+  <% }) %>
+</div>

@@ -1,0 +1,36 @@
+<div class="mb-3 flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none]">
+  <a href="/admin/orders" class="badge px-3 py-1 text-sm <%= !status ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 ring-1 ring-slate-200' %>">Tất cả</a>
+  <% Object.entries(ORDER_STATUSES).forEach(([key, s]) => { %>
+    <a href="/admin/orders?status=<%= key %>" class="badge px-3 py-1 text-sm <%= status === key ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 ring-1 ring-slate-200' %>"><%= s.label %></a>
+  <% }) %>
+</div>
+
+<% if (!orders.length) { %>
+  <div class="card text-center text-sm text-slate-500">Không có đơn hàng.</div>
+<% } %>
+<div class="space-y-2">
+  <% orders.forEach((o) => { const final = FINAL_STATUSES.includes(o.status); %>
+    <div class="card !p-3">
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0">
+          <div class="text-xs text-slate-500">#<%= o.id %> &middot; <span class="font-medium text-slate-700"><%= o.username %></span> &middot; <%= formatDate(o.created_at) %></div>
+          <div class="font-medium text-slate-900"><%= o.service_name %></div>
+          <a href="<%= o.link %>" target="_blank" rel="noopener noreferrer nofollow" class="block truncate text-xs text-indigo-600"><%= o.link %></a>
+          <div class="mt-1 text-xs text-slate-500">SL: <b class="text-slate-700"><%= formatNumber(o.quantity) %></b> &middot; Giá: <b class="text-slate-700"><%= formatVnd(o.charge) %></b></div>
+        </div>
+        <span class="badge <%= ORDER_STATUSES[o.status].badge %>"><%= ORDER_STATUSES[o.status].label %></span>
+      </div>
+      <% if (!final) { %>
+        <form action="/admin/orders/<%= o.id %>" method="POST" class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <select name="status" class="input">
+            <% Object.entries(ORDER_STATUSES).forEach(([key, s]) => { %><option value="<%= key %>" <%= o.status === key ? 'selected' : '' %>><%= s.label %></option><% }) %>
+          </select>
+          <input name="start_count" type="number" min="0" class="input" placeholder="Bắt đầu" title="Số lượng ban đầu (start count)" value="<%= o.start_count ?? '' %>">
+          <input name="remains" type="number" min="0" class="input" placeholder="Còn lại" title="Số lượng còn lại (remains)" value="<%= o.remains ?? '' %>">
+          <button type="submit" class="btn-primary">Lưu</button>
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</div>

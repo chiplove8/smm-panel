@@ -1,0 +1,21 @@
+<div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+  <div class="card text-sm">
+    <h2 class="mb-3 font-semibold text-slate-900">Thông tin tài khoản</h2>
+    <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+      <dt class="text-slate-500">Tên đăng nhập</dt><dd class="font-medium"><%= user.username %></dd>
+      <dt class="text-slate-500">Email</dt><dd class="font-medium break-all"><%= user.email %></dd>
+      <dt class="text-slate-500">Số dư</dt><dd class="font-semibold text-emerald-600"><%= formatVnd(user.balance) %></dd>
+      <dt class="text-slate-500">Vai trò</dt><dd><%= user.role === 'admin' ? 'Quản trị viên' : 'Thành viên' %></dd>
+      <dt class="text-slate-500">Ngày tham gia</dt><dd><%= formatDate(user.created_at) %></dd>
+    </dl>
+  </div>
+  <form action="/account/password" method="POST" class="card space-y-3">
+    <h2 class="font-semibold text-slate-900">Đổi mật khẩu</h2>
+    <%- include('../partials/error') %>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div><label for="current" class="label">Mật khẩu hiện tại</label><input id="current" name="current" type="password" class="input" autocomplete="current-password" required></div>
+    <div><label for="password" class="label">Mật khẩu mới</label><input id="password" name="password" type="password" minlength="8" maxlength="128" class="input" autocomplete="new-password" required></div>
+    <div><label for="confirm" class="label">Nhập lại mật khẩu mới</label><input id="confirm" name="confirm" type="password" minlength="8" maxlength="128" class="input" autocomplete="new-password" required></div>
+    <button type="submit" class="btn-primary w-full sm:w-auto">Cập nhật</button>
+  </form>
+</div>

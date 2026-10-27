@@ -1,0 +1,10 @@
+<% if (flash && flash.length) { %>
+  <div class="mb-3 space-y-2">
+    <% flash.forEach((f) => { %>
+      <div data-flash class="flex items-start justify-between gap-2 rounded-md px-3 py-2 text-sm <%= f.type === 'error' ? 'bg-rose-50 text-rose-800 ring-1 ring-rose-200' : 'bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200' %>">
+        <span class="break-words"><%= f.message %></span>
+        <button type="button" data-dismiss class="shrink-0 text-lg leading-none opacity-60 hover:opacity-100" aria-label="Đóng">&times;</button>
+      </div>
+    <% }) %>
+  </div>
+<% } %>

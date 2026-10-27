@@ -1,0 +1,33 @@
+<div class="mx-auto w-full max-w-md px-2 py-8 sm:py-16">
+  <div class="card">
+    <h1 class="text-xl font-bold text-slate-900">Tạo tài khoản</h1>
+    <p class="mt-1 text-sm text-slate-500">Đã có tài khoản? <a href="/login" class="font-semibold text-indigo-600 hover:underline">Đăng nhập</a></p>
+    <form action="/register" method="POST" class="mt-4 space-y-3">
+      <%- include('../partials/error') %>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div>
+        <label for="username" class="label">Tên đăng nhập</label>
+        <input id="username" name="username" type="text" class="input" value="<%= values.username || '' %>" pattern="[A-Za-z0-9_]{3,30}" title="3-30 ký tự: chữ, số, dấu gạch dưới" autocomplete="username" required autofocus>
+      </div>
+      <div>
+        <label for="email" class="label">Email</label>
+        <input id="email" name="email" type="email" class="input" value="<%= values.email || '' %>" autocomplete="email" required>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label for="password" class="label">Mật khẩu</label>
+          <input id="password" name="password" type="password" class="input" minlength="8" maxlength="128" autocomplete="new-password" required>
+        </div>
+        <div>
+          <label for="confirm" class="label">Nhập lại mật khẩu</label>
+          <input id="confirm" name="confirm" type="password" class="input" minlength="8" maxlength="128" autocomplete="new-password" required>
+        </div>
+      </div>
+      <label class="flex items-start gap-2 text-sm text-slate-600">
+        <input type="checkbox" name="terms" value="1" class="mt-0.5 size-4 rounded border-slate-300 accent-indigo-600" required>
+        <span>Tôi đồng ý với <a href="/terms" class="text-indigo-600 hover:underline" target="_blank">điều khoản dịch vụ</a></span>
+      </label>
+      <button type="submit" class="btn-primary w-full">Đăng ký</button>
+    </form>
+  </div>
+</div>

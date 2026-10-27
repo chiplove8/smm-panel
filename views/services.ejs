@@ -1,0 +1,46 @@
+<div class="<%= user ? '' : 'mx-auto max-w-6xl px-2 py-4 sm:px-4 sm:py-8' %>">
+  <% if (!user) { %><h1 class="mb-3 text-2xl font-bold text-slate-900">Bảng giá dịch vụ</h1><% } %>
+  <div class="card mb-3 grid gap-2 sm:grid-cols-3">
+    <input id="service-filter" type="search" class="input sm:col-span-2" placeholder="Tìm dịch vụ...">
+    <select id="service-category" class="input">
+      <option value="">Tất cả danh mục</option>
+      <% categories.forEach((c) => { %><option value="<%= c.id %>"><%= c.name %></option><% }) %>
+    </select>
+  </div>
+  <% categories.forEach((c) => { const list = services.filter((s) => s.category_id === c.id); if (!list.length) return; %>
+    <section data-category-group class="card mb-3 !p-0">
+      <h2 class="border-b border-slate-200 px-3 py-2 font-semibold text-slate-900 sm:px-5"><%= c.name %></h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Dịch vụ</th><th>Giá / 1000</th><th>Min - Max</th><th>Thời gian</th><th></th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            <% list.forEach((s) => { %>
+              <tr data-service-row data-category="<%= c.id %>" data-search="<%= (s.id + ' ' + s.name + ' ' + c.name).toLowerCase() %>">
+                <td class="text-slate-500"><%= s.id %></td>
+                <td><div class="font-medium text-slate-900"><%= s.name %></div><div class="text-xs text-slate-500"><%= s.description %></div></td>
+                <td class="font-semibold whitespace-nowrap text-indigo-600"><%= formatVnd(s.rate) %></td>
+                <td class="whitespace-nowrap"><%= formatNumber(s.min_qty) %> - <%= formatNumber(s.max_qty) %></td>
+                <td class="whitespace-nowrap"><%= s.avg_time %></td>
+                <td><a href="/dashboard?service=<%= s.id %>" class="btn-primary !px-3 !py-1">Mua</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <ul class="divide-y divide-slate-100 md:hidden">
+        <% list.forEach((s) => { %>
+          <li data-service-row data-category="<%= c.id %>" data-search="<%= (s.id + ' ' + s.name + ' ' + c.name).toLowerCase() %>" class="px-3 py-2">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0"><span class="text-xs text-slate-500">#<%= s.id %></span> <span class="font-medium text-slate-900"><%= s.name %></span></div>
+              <span class="shrink-0 font-semibold text-indigo-600"><%= formatVnd(s.rate) %></span>
+            </div>
+            <div class="mt-1 flex items-center justify-between gap-2 text-xs text-slate-500">
+              <span><%= formatNumber(s.min_qty) %> - <%= formatNumber(s.max_qty) %> &middot; <%= s.avg_time %></span>
+              <a href="/dashboard?service=<%= s.id %>" class="font-semibold text-indigo-600">Mua &rarr;</a>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+  <% }) %>
+</div>

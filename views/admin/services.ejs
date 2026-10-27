@@ -1,0 +1,54 @@
+<%
+  const form = edit || { category_id: '', name: '', rate: '', min_qty: 100, max_qty: 10000, avg_time: '', description: '', active: 1 };
+%>
+<div class="grid grid-cols-1 gap-3 lg:grid-cols-3">
+  <div class="space-y-3 lg:col-span-1">
+    <form action="/admin/services<%= edit ? '/' + edit.id : '' %>" method="POST" class="card space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="font-semibold text-slate-900"><%= edit ? 'Sửa dịch vụ #' + edit.id : 'Thêm dịch vụ' %></h2>
+        <% if (edit) { %><a href="/admin/services" class="text-sm text-slate-500 hover:underline">Hủy</a><% } %>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div>
+        <label class="label" for="category_id">Danh mục</label>
+        <select id="category_id" name="category_id" class="input" required>
+          <% categories.forEach((c) => { %><option value="<%= c.id %>" <%= form.category_id === c.id ? 'selected' : '' %>><%= c.name %></option><% }) %>
+        </select>
+      </div>
+      <div><label class="label" for="name">Tên dịch vụ</label><input id="name" name="name" class="input" value="<%= form.name %>" required maxlength="200"></div>
+      <div class="grid grid-cols-3 gap-2">
+        <div><label class="label" for="rate">Giá/1000</label><input id="rate" name="rate" type="number" min="1" class="input" value="<%= form.rate %>" required></div>
+        <div><label class="label" for="min_qty">Min</label><input id="min_qty" name="min_qty" type="number" min="1" class="input" value="<%= form.min_qty %>" required></div>
+        <div><label class="label" for="max_qty">Max</label><input id="max_qty" name="max_qty" type="number" min="1" class="input" value="<%= form.max_qty %>" required></div>
+      </div>
+      <div><label class="label" for="avg_time">Thời gian TB</label><input id="avg_time" name="avg_time" class="input" value="<%= form.avg_time %>" placeholder="VD: 0-6 giờ"></div>
+      <div><label class="label" for="description">Mô tả</label><textarea id="description" name="description" rows="3" class="input"><%= form.description %></textarea></div>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="active" value="1" class="size-4 accent-indigo-600" <%= form.active ? 'checked' : '' %>> Đang hoạt động</label>
+      <button type="submit" class="btn-primary w-full"><%= edit ? 'Lưu thay đổi' : 'Thêm dịch vụ' %></button>
+    </form>
+
+    <form action="/admin/categories" method="POST" class="card space-y-3">
+      <h2 class="font-semibold text-slate-900">Thêm danh mục</h2>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div><label class="label" for="cat-name">Tên danh mục</label><input id="cat-name" name="name" class="input" required maxlength="100"></div>
+      <div><label class="label" for="cat-platform">Nền tảng (slug)</label><input id="cat-platform" name="platform" class="input" placeholder="facebook" pattern="[a-z0-9_\-]{2,30}" required></div>
+      <button type="submit" class="btn-secondary w-full">Thêm danh mục</button>
+    </form>
+  </div>
+
+  <div class="card !p-0 lg:col-span-2">
+    <h2 class="border-b border-slate-200 px-3 py-2 font-semibold text-slate-900 sm:px-5">Danh sách dịch vụ (<%= services.length %>)</h2>
+    <ul class="divide-y divide-slate-100">
+      <% services.forEach((s) => { %>
+        <li class="flex items-start justify-between gap-2 px-3 py-2 sm:px-5 <%= s.active ? '' : 'opacity-50' %>">
+          <div class="min-w-0">
+            <div class="text-xs text-slate-500">#<%= s.id %> &middot; <%= s.category_name %><%= s.active ? '' : ' · Đã tắt' %></div>
+            <div class="font-medium text-slate-900"><%= s.name %></div>
+            <div class="text-xs text-slate-500"><%= formatVnd(s.rate) %>/1000 &middot; <%= formatNumber(s.min_qty) %>-<%= formatNumber(s.max_qty) %></div>
+          </div>
+          <a href="/admin/services?edit=<%= s.id %>" class="btn-secondary shrink-0 !px-3 !py-1">Sửa</a>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</div>

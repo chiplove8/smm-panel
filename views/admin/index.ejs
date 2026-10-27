@@ -1,0 +1,20 @@
+<div class="mb-3 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-5">
+  <div class="card"><div class="text-xs text-slate-500">Thành viên</div><div class="text-lg font-bold sm:text-xl"><%= formatNumber(stats.users) %></div></div>
+  <div class="card"><div class="text-xs text-slate-500">Tổng đơn</div><div class="text-lg font-bold sm:text-xl"><%= formatNumber(stats.orders) %></div></div>
+  <div class="card"><div class="text-xs text-slate-500">Doanh thu</div><div class="text-lg font-bold text-emerald-600 sm:text-xl"><%= formatVnd(stats.revenue) %></div></div>
+  <a href="/admin/orders?status=pending" class="card hover:ring-indigo-300"><div class="text-xs text-slate-500">Đơn đang chạy</div><div class="text-lg font-bold text-indigo-600 sm:text-xl"><%= formatNumber(stats.running) %></div></a>
+  <a href="/admin/deposits" class="card col-span-2 hover:ring-indigo-300 lg:col-span-1"><div class="text-xs text-slate-500">Nạp tiền chờ duyệt</div><div class="text-lg font-bold text-amber-600 sm:text-xl"><%= formatNumber(stats.pendingDeposits) %></div></a>
+</div>
+<div class="card !p-0">
+  <div class="flex items-center justify-between border-b border-slate-200 px-3 py-2 sm:px-5">
+    <h2 class="font-semibold text-slate-900">Đơn hàng mới nhất</h2>
+    <a href="/admin/orders" class="text-sm font-medium text-indigo-600 hover:underline">Quản lý đơn</a>
+  </div>
+  <% if (!orders.length) { %>
+    <p class="px-3 py-6 text-center text-sm text-slate-500">Chưa có đơn hàng.</p>
+  <% } else { %>
+    <ul class="divide-y divide-slate-100">
+      <% orders.forEach((o) => { %><%- include('../partials/order-row', { o, showUser: true }) %><% }) %>
+    </ul>
+  <% } %>
+</div>

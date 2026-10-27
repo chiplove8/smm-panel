@@ -1,0 +1,16 @@
+<li class="px-3 py-2">
+  <div class="flex items-start justify-between gap-2">
+    <div class="min-w-0">
+      <div class="text-xs text-slate-500">#<%= o.id %> &middot; <%= formatDate(o.created_at) %><% if (locals.showUser) { %> &middot; <span class="font-medium text-slate-700"><%= o.username %></span><% } %></div>
+      <div class="font-medium text-slate-900"><%= o.service_name %></div>
+      <a href="<%= o.link %>" target="_blank" rel="noopener noreferrer nofollow" class="block truncate text-xs text-indigo-600"><%= o.link %></a>
+    </div>
+    <span class="badge <%= ORDER_STATUSES[o.status].badge %>"><%= ORDER_STATUSES[o.status].label %></span>
+  </div>
+  <div class="mt-1 flex flex-wrap gap-x-3 text-xs text-slate-500">
+    <span>SL: <b class="text-slate-700"><%= formatNumber(o.quantity) %></b></span>
+    <span>Bắt đầu: <b class="text-slate-700"><%= o.start_count ?? '-' %></b></span>
+    <span>Còn lại: <b class="text-slate-700"><%= o.remains ?? '-' %></b></span>
+    <span>Giá: <b class="text-slate-700"><%= formatVnd(o.charge) %></b></span>
+  </div>
+</li>

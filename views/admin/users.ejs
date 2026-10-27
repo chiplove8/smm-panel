@@ -1,0 +1,19 @@
+<div class="space-y-2">
+  <% users.forEach((u) => { %>
+    <div class="card !p-3">
+      <div class="flex flex-wrap items-start justify-between gap-2">
+        <div class="min-w-0">
+          <div class="font-medium text-slate-900"><%= u.username %> <% if (u.role === 'admin') { %><span class="badge bg-indigo-100 text-indigo-700">admin</span><% } %></div>
+          <div class="truncate text-xs text-slate-500"><%= u.email %> &middot; <%= u.order_count %> đơn &middot; <%= formatDate(u.created_at) %></div>
+        </div>
+        <div class="font-semibold text-emerald-600"><%= formatVnd(u.balance) %></div>
+      </div>
+      <form action="/admin/users/<%= u.id %>/balance" method="POST" class="mt-2 grid grid-cols-[1fr_1fr_auto] gap-2" data-confirm="Xác nhận điều chỉnh số dư cho <%= u.username %>?">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input name="amount" type="number" step="1000" class="input" placeholder="+/- số tiền" required>
+        <input name="note" class="input" placeholder="Ghi chú" maxlength="200">
+        <button type="submit" class="btn-primary">Lưu</button>
+      </form>
+    </div>
+  <% }) %>
+</div>

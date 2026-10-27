@@ -1,0 +1,74 @@
+<div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+  <form action="/funds" method="POST" class="card space-y-3">
+    <h2 class="font-semibold text-slate-900">Tạo yêu cầu nạp tiền</h2>
+    <%- include('../partials/error') %>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>
+      <label for="method" class="label">Phương thức</label>
+      <select id="method" name="method" class="input" required>
+        <% Object.entries(methods).forEach(([key, label]) => { %><option value="<%= key %>" <%= values.method === key ? 'selected' : '' %>><%= label %></option><% }) %>
+      </select>
+    </div>
+    <div>
+      <label for="amount" class="label">Số tiền (VNĐ)</label>
+      <input id="amount" name="amount" type="number" inputmode="numeric" min="10000" step="1000" class="input" value="<%= values.amount || '' %>" placeholder="Tối thiểu 10.000" required>
+    </div>
+    <button type="submit" class="btn-primary w-full">Tạo yêu cầu</button>
+  </form>
+
+  <div class="card space-y-2 text-sm text-slate-700">
+    <h2 class="font-semibold text-slate-900">Hướng dẫn chuyển khoản</h2>
+    <div class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-md bg-slate-50 p-3 ring-1 ring-slate-200">
+      <span class="text-slate-500">Ngân hàng</span><b>Vietcombank (demo)</b>
+      <span class="text-slate-500">Số TK</span><b>0123456789</b>
+      <span class="text-slate-500">Chủ TK</span><b>CONG TY SMM PANEL</b>
+    </div>
+    <p>Sau khi tạo yêu cầu, chuyển khoản đúng số tiền với <b>nội dung</b> là mã yêu cầu (ví dụ <code class="rounded bg-slate-100 px-1">SMM1ABC</code>). Admin sẽ duyệt và cộng tiền vào tài khoản.</p>
+  </div>
+</div>
+
+<div class="mt-3 grid gap-3 lg:grid-cols-2">
+  <div class="card !p-0">
+    <h2 class="border-b border-slate-200 px-3 py-2 font-semibold text-slate-900 sm:px-5">Yêu cầu nạp tiền</h2>
+    <% if (!deposits.length) { %>
+      <p class="px-3 py-6 text-center text-sm text-slate-500">Chưa có yêu cầu nào.</p>
+    <% } else { %>
+      <ul class="divide-y divide-slate-100">
+        <% deposits.forEach((d) => { %>
+          <li class="flex items-center justify-between gap-2 px-3 py-2 sm:px-5">
+            <div class="min-w-0">
+              <div class="font-mono text-sm font-semibold text-slate-900"><%= d.reference %></div>
+              <div class="text-xs text-slate-500"><%= methods[d.method] %> &middot; <%= formatDate(d.created_at) %></div>
+            </div>
+            <div class="text-right">
+              <div class="font-semibold text-slate-900"><%= formatVnd(d.amount) %></div>
+              <span class="badge <%= DEPOSIT_STATUSES[d.status].badge %>"><%= DEPOSIT_STATUSES[d.status].label %></span>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+
+  <div class="card !p-0">
+    <h2 class="border-b border-slate-200 px-3 py-2 font-semibold text-slate-900 sm:px-5">Biến động số dư</h2>
+    <% if (!transactions.length) { %>
+      <p class="px-3 py-6 text-center text-sm text-slate-500">Chưa có giao dịch nào.</p>
+    <% } else { %>
+      <ul class="divide-y divide-slate-100">
+        <% transactions.forEach((t) => { %>
+          <li class="flex items-center justify-between gap-2 px-3 py-2 sm:px-5">
+            <div class="min-w-0">
+              <div class="truncate text-sm text-slate-900"><%= t.description %></div>
+              <div class="text-xs text-slate-500"><%= TRANSACTION_TYPES[t.type] || t.type %> &middot; <%= formatDate(t.created_at) %></div>
+            </div>
+            <div class="shrink-0 text-right">
+              <div class="font-semibold <%= t.amount >= 0 ? 'text-emerald-600' : 'text-rose-600' %>"><%= t.amount >= 0 ? '+' : '-' %><%= formatVnd(Math.abs(t.amount)) %></div>
+              <div class="text-xs text-slate-500">SD: <%= formatVnd(t.balance_after) %></div>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="mx-auto w-full max-w-md px-2 py-8 sm:py-16">
+  <div class="card">
+    <h1 class="text-xl font-bold text-slate-900">Đăng nhập</h1>
+    <p class="mt-1 text-sm text-slate-500">Chưa có tài khoản? <a href="/register" class="font-semibold text-indigo-600 hover:underline">Đăng ký ngay</a></p>
+    <form action="/login" method="POST" class="mt-4 space-y-3">
+      <%- include('../partials/error') %>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div>
+        <label for="login" class="label">Tên đăng nhập hoặc email</label>
+        <input id="login" name="login" type="text" class="input" value="<%= values.login || '' %>" autocomplete="username" required autofocus>
+      </div>
+      <div>
+        <label for="password" class="label">Mật khẩu</label>
+        <input id="password" name="password" type="password" class="input" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-primary w-full">Đăng nhập</button>
+    </form>
+  </div>
+</div>
