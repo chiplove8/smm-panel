@@ -1,0 +1,56 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #1f2937;
+  background: #f5f7fb;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+a { color: #4f46e5; }
+.container { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 20px; }
+main.container { flex: 1; padding-top: 32px; padding-bottom: 32px; }
+
+.site-header { background: #111827; }
+.nav { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.logo { color: #fff; font-weight: 700; font-size: 20px; text-decoration: none; }
+.logo span { color: #818cf8; }
+.nav nav a { color: #d1d5db; text-decoration: none; margin-left: 20px; }
+.nav nav a.active, .nav nav a:hover { color: #fff; }
+
+.site-footer { background: #111827; color: #9ca3af; padding: 16px 0; text-align: center; font-size: 14px; }
+
+.hero { text-align: center; padding: 40px 0; }
+.hero h1 { font-size: 36px; margin-bottom: 8px; }
+.hero p { color: #6b7280; margin-bottom: 24px; }
+
+.btn {
+  display: inline-block; background: #4f46e5; color: #fff; border: none;
+  padding: 10px 18px; border-radius: 8px; text-decoration: none; cursor: pointer; font-size: 15px;
+}
+.btn:hover { background: #4338ca; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.card h3 { margin-top: 0; }
+
+.todo-form { display: flex; gap: 8px; margin-bottom: 8px; }
+.todo-form input { flex: 1; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; }
+.error { color: #dc2626; }
+.muted { color: #6b7280; }
+
+.todo-list { list-style: none; padding: 0; margin-top: 16px; }
+.todo-list li {
+  display: flex; align-items: center; gap: 12px; background: #fff;
+  padding: 12px 16px; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.06);
+}
+.todo-list form { margin: 0; }
+.todo-list .text { flex: 1; }
+.todo-list li.done .text { text-decoration: line-through; color: #9ca3af; }
+.check {
+  width: 24px; height: 24px; border: 2px solid #4f46e5; border-radius: 6px;
+  background: #fff; color: #4f46e5; cursor: pointer; padding: 0; line-height: 1;
+}
+.btn-delete { background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 16px; }
+.btn-delete:hover { color: #dc2626; }
